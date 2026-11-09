@@ -110,7 +110,7 @@ Both browser versions share every script. The root `manifest.json` is the common
 
 ```text
 _locales/en/messages.json  All UI text, and the product name
-assets/                    Icon: SVG master and PNG sizes
+assets/                    Icon: SVG sources and PNG sizes
 browsers/firefox.json      Firefox manifest override
 docs/                      Feasibility findings and manual test matrix
 manifest.json              Shared manifest; directly loadable in Chromium
