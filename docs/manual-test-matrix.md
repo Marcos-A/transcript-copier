@@ -21,7 +21,7 @@ Run in current stable Chromium and Firefox before calling a release complete. Re
 | Ad blocker or privacy extension | Graceful behaviour | To do | uBlock Origin, logged out, by hand: transcript does not load, copy reports a timeout |
 | Logged in | Note any differences | Pass, by hand in Edge | Pass, by hand |
 | Logged out | Note any differences | Pass, by hand in Edge | Pass, by hand, with uBlock Origin off |
-| Toolbar icon at 16 and 32 px, light and dark | Play mark, bars, and outlines legible | To do | To do |
+| Toolbar icon at 16 and 32 px, light and dark | Play mark and bars legible | To do | To do |
 | 48 and 128 px on the extensions page | Correct icon | To do | To do |
 | Popup: remove-timestamps toggle changes output | Timestamps appear when off | Simulated | To do |
 | Popup: copy button | Same content as the page button | To do | To do |
