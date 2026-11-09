@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "version": "1.0.0",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
+  "permissions": ["storage", "clipboardWrite"],
+  "action": {
+    "default_title": "__MSG_extName__",
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {"16": "assets/icon-16.png", "24": "assets/icon-24.png", "32": "assets/icon-32.png"}
+  },
+  "icons": {"16": "assets/icon-16.png", "32": "assets/icon-32.png", "48": "assets/icon-48.png", "128": "assets/icon-128.png"},
+  "background": {"service_worker": "src/background/background.js"},
+  "commands": {
+    "copy-transcript": {
+      "suggested_key": {"default": "Alt+Shift+Y"},
+      "description": "__MSG_commandDescription__"
+    }
+  },
+  "content_scripts": [{
+    "matches": ["https://www.youtube.com/*"],
+    "js": [
+      "src/browser/api.js",
+      "src/browser/storage.js",
+      "src/browser/clipboard.js",
+      "src/transcript/errors.js",
+      "src/transcript/selectors.js",
+      "src/transcript/parse-captions.js",
+      "src/transcript/normalize.js",
+      "src/transcript/panel-source.js",
+      "src/transcript/transcript-service.js",
+      "src/content/navigation.js",
+      "src/content/notification.js",
+      "src/content/mount-button.js",
+      "src/content/main.js"
+    ],
+    "css": ["src/content/content.css"],
+    "run_at": "document_idle"
+  }]
+}

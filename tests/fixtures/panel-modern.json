@@ -1,0 +1,11 @@
+{
+  "note": "Rows in the shape read from YouTube's modern transcript panel (2026-11-09), with sanitized text.",
+  "rows": [
+    {"time": "0:01", "text": "[♪♪♪]"},
+    {"time": "0:18", "text": "♪ first line of the song ♪\n♪ second line of the song ♪"},
+    {"time": "0:27", "text": "It&#39;s a caf\u00e9 &amp; bar"},
+    {"time": "0:35", "text": ">> SPEAKER: never gonna, never gonna"},
+    {"time": "0:43", "text": "never gonna, never gonna"},
+    {"time": "1:02:03", "text": "最後の字幕 🎉 نهاية"}
+  ]
+}

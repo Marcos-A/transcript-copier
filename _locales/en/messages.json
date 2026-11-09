@@ -1,0 +1,23 @@
+{
+  "extName": {"message": "Transcript Copier", "description": "Provisional product name. This is the single source of truth for the display name."},
+  "extDescription": {"message": "Copy the full transcript of a YouTube video with one click."},
+  "commandDescription": {"message": "Copy the transcript of the current YouTube video"},
+  "buttonCopy": {"message": "Copy transcript"},
+  "buttonCopying": {"message": "Copying…"},
+  "buttonCopied": {"message": "Copied"},
+  "statusCopied": {"message": "Transcript copied ($1 segments)"},
+  "statusBusy": {"message": "Already copying a transcript"},
+  "error_UNSUPPORTED_PAGE": {"message": "Open a YouTube video first"},
+  "error_NO_CAPTIONS": {"message": "No transcript available for this video"},
+  "error_TRACK_UNAVAILABLE": {"message": "Couldn't load captions"},
+  "error_PARSE_ERROR": {"message": "Couldn't read this transcript"},
+  "error_INCOMPLETE_TRANSCRIPT": {"message": "Transcript could not be copied completely"},
+  "error_CLIPBOARD_DENIED": {"message": "Couldn't access the clipboard"},
+  "error_STALE_VIDEO": {"message": "Video changed; try again"},
+  "error_TIMEOUT": {"message": "Transcript request timed out"},
+  "popupFormat": {"message": "Format"},
+  "popupFormatClean": {"message": "Clean text"},
+  "popupFormatSegments": {"message": "One segment per line"},
+  "popupRemoveTimestamps": {"message": "Remove timestamps"},
+  "popupMetadata": {"message": "Include title, channel and link"}
+}

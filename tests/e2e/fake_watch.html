@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- Reproduces the parts of YouTube's watch page the extension touches, as observed 2026-11-09.
+     Scenario comes from the video ID, so tests never depend on live videos. -->
+<html><head><meta charset="utf-8"><title>fake watch</title></head>
+<body>
+<ytd-watch-flexy>
+  <div id="movie_player"></div>
+  <ytd-watch-metadata>
+    <h1>Fake title</h1>
+    <div id="menu"><div id="top-level-buttons-computed"><span>like</span></div></div>
+    <div id="section-host"></div>
+  </ytd-watch-metadata>
+  <ytd-engagement-panel-section-list-renderer id="panel" target-id="PAmodern_transcript_view"
+    visibility="ENGAGEMENT_PANEL_VISIBILITY_HIDDEN" style="display:block;height:400px;width:400px">
+    <div id="visibility-button"><button aria-label="Close">x</button></div>
+    <div id="list" style="height:300px;overflow-y:auto"></div>
+  </ytd-engagement-panel-section-list-renderer>
+</ytd-watch-flexy>
+<script>
+const HIDDEN='ENGAGEMENT_PANEL_VISIBILITY_HIDDEN', EXPANDED='ENGAGEMENT_PANEL_VISIBILITY_EXPANDED';
+const panel=document.getElementById('panel'), list=document.getElementById('list');
+let openTimer=null, scrollHandler=null;
+const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+function rowEl(time,text){const r=document.createElement('transcript-segment-view-model');
+  const t=document.createElement('div');t.className='ytwTranscriptSegmentViewModelTimestamp';t.textContent=time;
+  const a=document.createElement('div');a.textContent='1 second label';
+  const s=document.createElement('span');s.className='ytAttributedStringHost';s.textContent=text;
+  r.append(t,a,s);r.style.cssText='display:block;height:40px';return r;}
+function vid(){return new URLSearchParams(location.search).get('v');}
+function clearList(){list.onscroll=null;list.replaceChildren();}
+function renderSimple(id,n){clearList();for(let i=0;i<n;i++)list.append(rowEl(fmt(i),`${id} line ${i}`));}
+function renderVirtual(id,n){clearList();const inner=document.createElement('div');inner.style.cssText=`position:relative;height:${n*40}px`;list.append(inner);
+  const draw=()=>{const first=Math.max(0,Math.floor(list.scrollTop/40)-2);inner.replaceChildren();
+    for(let i=first;i<Math.min(n,first+12);i++){const e=rowEl(fmt(i),`${id} line ${i}`);e.style.position='absolute';e.style.top=(i*40)+'px';e.style.width='100%';inner.append(e);}};
+  list.onscroll=draw;draw();}
+function setup(){clearTimeout(openTimer);panel.setAttribute('visibility',HIDDEN);
+  const host=document.getElementById('section-host');host.replaceChildren();
+  if(vid()&&!vid().startsWith('NONE')){const s=document.createElement('ytd-video-description-transcript-section-renderer');
+    const b=document.createElement('button');b.textContent='Show transcript';b.onclick=openPanel;s.append(b);host.append(s);}}
+function openPanel(){const id=vid();panel.setAttribute('visibility',EXPANDED);clearList();
+  const delay=id.startsWith('SLOW')?3000:150;
+  openTimer=setTimeout(()=>{if(id.startsWith('VIRT'))renderVirtual(id,1500);else renderSimple(id,id.startsWith('SLOW')?5:24);},delay);}
+panel.querySelector('button').onclick=()=>panel.setAttribute('visibility',HIDDEN);
+window.spa=(id)=>{document.dispatchEvent(new CustomEvent('yt-navigate-start'));
+  history.pushState({},'','/watch?v='+id);
+  setTimeout(()=>{setup();document.dispatchEvent(new CustomEvent('yt-navigate-finish'));},50);};
+window.rerenderActions=()=>{const m=document.getElementById('menu');const r=document.createElement('div');r.id='top-level-buttons-computed';m.replaceChildren(r);};
+setup();
+</script>
+</body></html>

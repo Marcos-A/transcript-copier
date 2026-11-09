@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="popup.css">
+    <title>Transcript Copier</title>
+  </head>
+  <body>
+    <header>
+      <img src="../../assets/icon-32.png" alt="" width="20" height="20">
+      <h1 id="name"></h1>
+    </header>
+    <button id="copy" type="button"></button>
+    <p id="status" role="status" aria-live="polite"></p>
+    <form id="settings">
+      <label for="format" data-message="popupFormat"></label>
+      <select id="format">
+        <option value="clean" data-message="popupFormatClean"></option>
+        <option value="segments" data-message="popupFormatSegments"></option>
+      </select>
+      <label class="check"><input id="removeTimestamps" type="checkbox"><span data-message="popupRemoveTimestamps"></span></label>
+      <label class="check"><input id="metadata" type="checkbox"><span data-message="popupMetadata"></span></label>
+    </form>
+    <script src="../browser/api.js"></script>
+    <script src="../transcript/errors.js"></script>
+    <script src="../browser/storage.js"></script>
+    <script src="../browser/clipboard.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="Video transcript copy icon">
+<title>Video transcript copy</title>
+<!-- transparent outside the silhouette -->
+<rect x="13" y="27" width="230" height="202" rx="38" fill="#222528"/>
+<!-- play, YouTube red -->
+<path d="M57 65 C57 60 63 57 68 60 L113 86 C119 90 119 97 113 101 L68 127 C63 130 57 127 57 121 Z" fill="#FF0033"/>
+<!-- transcript lines -->
+<rect x="132" y="86" width="82" height="15" rx="7.5" fill="#F5F3EF"/>
+<rect x="44" y="145" width="124" height="15" rx="7.5" fill="#F5F3EF"/>
+<rect x="44" y="177" width="107" height="15" rx="7.5" fill="#F5F3EF"/>
+<!-- rear copy sheet, silver-gray -->
+<rect x="186" y="158" width="47" height="49" rx="12" fill="#222528" stroke="#B8BABD" stroke-width="9"/>
+<!-- foreground copy sheet, warm white -->
+<rect x="169" y="177" width="50" height="52" rx="13" fill="#222528" stroke="#F5F3EF" stroke-width="9"/>
+</svg>
