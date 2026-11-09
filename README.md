@@ -24,7 +24,7 @@ No panel to open, nothing to select, no scrolling. Transcript Copier adds a **Co
 - **Honest.** “Copied” appears only after the clipboard write succeeds. If a copy fails, your clipboard stays as it was.
 - **Keep it private.** No tracking, external requests, or runtime dependencies.
 
-> **Project status:** the name is provisional. Works on live YouTube in Edge and Firefox when logged in. See [test status](#test-status).
+> **Project status:** the name is provisional. Works on live YouTube in Edge and Firefox. See [test status](#test-status).
 
 ## Get the source
 
@@ -46,15 +46,16 @@ Works with Chrome, Edge, Brave, and other Chromium browsers. No build step is re
 
 ### Firefox
 
-Requires desktop Firefox **142 or newer**. There is no signed package yet, so use a temporary installation, which needs Python 3.9+:
+Requires desktop Firefox **142 or newer**. This package targets desktop Firefox; Android support has not been tested.
 
-```sh
-python3 scripts/build.py firefox
-```
+1. [Download Transcript Copier for Firefox](https://github.com/Marcos-A/transcript-copier/releases/download/v1.0.0/transcript-copier-firefox-1.0.0.xpi). The package is **signed by Mozilla**.
+2. Open `about:addons`, click the gear menu, and choose **Install Add-on From File**.
+3. Select the downloaded `.xpi` and confirm installation.
+4. Allow YouTube site access if prompted, then refresh YouTube and open a video.
 
-Open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, and select `dist/firefox/manifest.json`. Allow YouTube site access if prompted, then refresh YouTube.
+The signed extension stays installed after Firefox restarts. Python and a local build are not required. See the [v1.0.0 release notes](https://github.com/Marcos-A/transcript-copier/releases/tag/v1.0.0).
 
-Temporary add-ons are removed when Firefox restarts. See Mozilla’s [temporary installation guide](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/).
+For local development, use [temporary installation](#temporary-firefox-installation). Instructions for preparing future releases are under [Firefox signing](#firefox-signing).
 
 ## Usage
 
@@ -140,6 +141,22 @@ python3 scripts/build.py firefox   # Firefox only
 ```
 
 Builds are written to `dist/chromium/` and `dist/firefox/`, with versioned ZIP packages alongside them. Files are copied unchanged. There is no minification, bundling, or transpilation. Generated files are ignored by Git.
+
+### Temporary Firefox installation
+
+Run `python3 scripts/build.py firefox`, open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on**, and select `dist/firefox/manifest.json`. Allow YouTube site access if prompted, then refresh YouTube.
+
+Temporary add-ons are removed when Firefox restarts. See Mozilla’s [temporary installation guide](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/).
+
+### Firefox signing
+
+Release versions of Firefox only keep signed add-ons. To prepare a new version:
+
+1. Raise `version` in `manifest.json` and run `python3 scripts/build.py firefox`.
+2. In the [Add-on Developer Hub](https://addons.mozilla.org/developers/), upload `dist/transcript-copier-firefox-<version>.zip` as a new version, distributed on your own.
+3. Download the signed `.xpi` once Mozilla has approved it, and attach it to a GitHub release.
+
+The extension is not listed on addons.mozilla.org, so installed copies do not update themselves.
 
 ### Run checks
 
