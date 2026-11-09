@@ -93,6 +93,16 @@ async def main():
             text = await read_clipboard(page)
             results.check("reads every row of a recycled 1500-row list", len(text.split(" line ")) == 1501 and text.endswith("line 1499"), f"{len(text.split(' line '))}")
 
+            await page.wait_for_timeout(2500)
+            await page.evaluate("spa('LAZYeeeeeee')")
+            await page.wait_for_timeout(300)
+            await set_clipboard(page, SENTINEL)
+            await page.click(BUTTON)
+            await state(page, ["copied", "error"], 100000)
+            text = await read_clipboard(page)
+            results.check("reads every page of a lazily loaded 3000-row list", len(text.split(" line ")) == 3001 and text.endswith("line 2999"), f"{len(text.split(' line '))} rows, {await page.inner_text('#transcript-copier-toast')}")
+
+            await page.wait_for_timeout(2500)
             await page.evaluate("rerenderActions()")
             await page.wait_for_timeout(300)
             results.check("remounts after YouTube re-renders", await page.locator(BUTTON).count() == 1)

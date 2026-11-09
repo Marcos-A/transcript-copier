@@ -2,7 +2,7 @@
 (function (root) {
   const TC = (root.TranscriptCopier = root.TranscriptCopier || {});
 
-  const OVERALL_LIMIT_MS = 90000;
+  const OVERALL_LIMIT_MS = 180000;
 
   function withTimeout(promise, limitMs, setTimer, clearTimer) {
     let timer;
@@ -21,7 +21,11 @@
     const clearTimer = deps.clearTimer || ((timer) => clearTimeout(timer));
 
     async function run(videoId, settings, guard) {
-      const { rows, source } = await deps.panelSource.extract({ guard, staleSignature: deps.staleSignature() });
+      const { rows, source } = await deps.panelSource.extract({
+        guard,
+        staleSignature: deps.staleSignature(),
+        durationMs: deps.getDurationMs(),
+      });
       guard();
       const segments = TC.rowsToSegments(rows);
       TC.assertComplete(segments, deps.getDurationMs());

@@ -14,7 +14,7 @@
     showTranscriptButton: 'ytd-video-description-transcript-section-renderer button',
     panel: 'ytd-engagement-panel-section-list-renderer',
     panelCloseButton: '#visibility-button button',
-    panelLoading: 'ytd-continuation-item-renderer, tp-yt-paper-spinner, ytd-continuation-spinner-renderer',
+    panelLoading: 'ytd-continuation-item-renderer, tp-yt-paper-spinner[active], ytd-continuation-spinner-renderer',
   });
 
   TC.PANEL_EXPANDED = 'ENGAGEMENT_PANEL_VISIBILITY_EXPANDED';

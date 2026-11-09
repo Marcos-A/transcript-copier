@@ -1,17 +1,19 @@
 // Reads the transcript from YouTube's own transcript panel, the only source that returned data
-// in the feasibility spike (docs/feasibility.md). The panel is opened off-screen, read until the
+// in the feasibility spike (docs/feasibility.md). The panel is opened invisibly, read until the
 // list stops growing, and restored. No page-world code or undocumented request is involved.
 (function (root) {
   const TC = (root.TranscriptCopier = root.TranscriptCopier || {});
 
   const TIMING = Object.freeze({
     buttonWaitMs: 8000,
-    rowsWaitMs: 15000,
-    collectLimitMs: 60000,
+    rowsWaitMs: 30000,
+    collectLimitMs: 150000,
+    stallLimitMs: 20000,
     pollMs: 100,
     scrollSettleMs: 120,
     walkStepMs: 60,
     stableTicks: 3,
+    shortTicks: 25,
     closeWaitMs: 1000,
   });
 
@@ -105,19 +107,27 @@
     /**
      * Gathers every row, merging across scroll positions so a virtualised or lazily extended list
      * is still read in full. A jump to the bottom settles the common fully rendered case quickly.
+     * While the rows end well before the video does, the list gets longer to prove it has stopped.
      */
-    async function collectAllRows(panel, guard) {
+    async function collectAllRows(panel, guard, durationMs) {
       const merged = new Map();
       let source = null;
+      let renderedCount = 0;
+      let lastRowMs = 0;
       const collect = () => {
         const read = readPanel(panel);
         if (!read) return 0;
         source = read.source;
+        renderedCount = read.rows.length;
         const before = merged.size;
-        for (const row of read.rows) merged.set(`${row.time}\u0000${row.text}`, row);
+        for (const row of read.rows) {
+          merged.set(`${row.time}\u0000${row.text}`, row);
+          lastRowMs = Math.max(lastRowMs, TC.parseTimestamp(row.time) ?? 0);
+        }
         return merged.size - before;
       };
       const isLoading = () => Boolean(panel.querySelector(S.panelLoading));
+      const endsEarly = () => Number.isFinite(durationMs) && lastRowMs < durationMs * 0.9;
 
       collect();
       const firstRow = panel.querySelector(TC.ROW_ADAPTERS.map((adapter) => adapter.row).join(','));
@@ -126,25 +136,27 @@
 
       async function settle(requireBottom) {
         let stable = 0;
-        let grew = false;
-        while (stable < timing.stableTicks) {
+        let lastProgress = now();
+        while (stable < (endsEarly() ? timing.shortTicks : timing.stableTicks)) {
           guard();
           if (now() >= deadline) throw new TC.TranscriptError('INCOMPLETE_TRANSCRIPT', 'collection limit');
           await sleep(timing.scrollSettleMs);
           const added = collect();
-          if (added > 0) grew = true;
+          if (added > 0) lastProgress = now();
+          if (now() - lastProgress >= timing.stallLimitMs && isLoading()) {
+            throw new TC.TranscriptError('INCOMPLETE_TRANSCRIPT', 'loading stalled');
+          }
           stable = added > 0 || isLoading() ? 0 : stable + 1;
           if (requireBottom && scroller) scroller.scrollTop = scroller.scrollHeight;
         }
-        return grew;
       }
 
       const savedTop = scroller ? scroller.scrollTop : 0;
       try {
         if (scroller) scroller.scrollTop = scroller.scrollHeight;
-        const grew = await settle(true);
-        if (scroller && grew) {
-          // New rows appeared on the jump, so rows may be recycled: walk the list to catch them.
+        await settle(true);
+        if (scroller && merged.size > renderedCount) {
+          // Rows seen earlier have left the DOM, so the list recycles them: walk it to catch all.
           scroller.scrollTop = 0;
           for (;;) {
             guard();
@@ -178,9 +190,9 @@
     }
 
     /** Returns { rows, source } for the current video; `guard` throws once the video changes. */
-    async function extract({ guard, staleSignature = null }) {
+    async function extract({ guard, staleSignature = null, durationMs = Number.NaN }) {
       const alreadyOpen = findExpandedTranscript(staleSignature);
-      if (alreadyOpen) return collectAllRows(alreadyOpen, guard);
+      if (alreadyOpen) return collectAllRows(alreadyOpen, guard, durationMs);
 
       const scrollY = win.scrollY;
       allPanels().filter(isExpanded).forEach((panel) => panel.setAttribute(KEEP_ATTR, ''));
@@ -188,7 +200,7 @@
       let panel = null;
       try {
         panel = await openPanel(staleSignature, guard);
-        return await collectAllRows(panel, guard);
+        return await collectAllRows(panel, guard, durationMs);
       } finally {
         await restore(panel || allPanels().find((item) => isExpanded(item) && !item.hasAttribute(KEEP_ATTR)));
         win.scrollTo(win.scrollX, scrollY);

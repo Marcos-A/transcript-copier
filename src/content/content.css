@@ -64,13 +64,16 @@ html[dark] #transcript-copier-button:hover {
   opacity: 1;
 }
 
-/* The panel opened for extraction renders off-screen so the page layout does not move. */
+/* The panel opened for extraction is taken out of the layout and made transparent. It must stay
+   inside the viewport: YouTube loads further transcript pages only when they become visible. */
 html[data-transcript-copier-extracting] ytd-engagement-panel-section-list-renderer[visibility="ENGAGEMENT_PANEL_VISIBILITY_EXPANDED"]:not([data-transcript-copier-keep]) {
   position: fixed !important;
   top: 0 !important;
-  left: -10000px !important;
+  right: 0 !important;
   width: 400px !important;
   height: 600px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

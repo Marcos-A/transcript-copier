@@ -33,13 +33,20 @@ function renderVirtual(id,n){clearList();const inner=document.createElement('div
   const draw=()=>{const first=Math.max(0,Math.floor(list.scrollTop/40)-2);inner.replaceChildren();
     for(let i=first;i<Math.min(n,first+12);i++){const e=rowEl(fmt(i),`${id} line ${i}`);e.style.position='absolute';e.style.top=(i*40)+'px';e.style.width='100%';inner.append(e);}};
   list.onscroll=draw;draw();}
+// Long transcripts as a paginated list: the next batch loads only when the placeholder is visible.
+function renderLazy(id,total,batch){clearList();let done=0;const inner=document.createElement('div');list.append(inner);
+  const more=()=>{for(const end=Math.min(total,done+batch);done<end;done++)inner.append(rowEl(fmt(done),`${id} line ${done}`));
+    if(done>=total)return;
+    const c=document.createElement('ytd-continuation-item-renderer');c.style.cssText='display:block;height:20px';inner.append(c);
+    const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();setTimeout(()=>{c.remove();more();},100);}},{root:null});io.observe(c);};
+  more();}
 function setup(){clearTimeout(openTimer);panel.setAttribute('visibility',HIDDEN);
   const host=document.getElementById('section-host');host.replaceChildren();
   if(vid()&&!vid().startsWith('NONE')){const s=document.createElement('ytd-video-description-transcript-section-renderer');
     const b=document.createElement('button');b.textContent='Show transcript';b.onclick=openPanel;s.append(b);host.append(s);}}
 function openPanel(){const id=vid();panel.setAttribute('visibility',EXPANDED);clearList();
   const delay=id.startsWith('SLOW')?3000:150;
-  openTimer=setTimeout(()=>{if(id.startsWith('VIRT'))renderVirtual(id,1500);else renderSimple(id,id.startsWith('SLOW')?5:24);},delay);}
+  openTimer=setTimeout(()=>{if(id.startsWith('LAZY'))renderLazy(id,3000,200);else if(id.startsWith('VIRT'))renderVirtual(id,1500);else renderSimple(id,id.startsWith('SLOW')?5:24);},delay);}
 panel.querySelector('button').onclick=()=>panel.setAttribute('visibility',HIDDEN);
 window.spa=(id)=>{document.dispatchEvent(new CustomEvent('yt-navigate-start'));
   history.pushState({},'','/watch?v='+id);

@@ -34,7 +34,9 @@ The **official panel** is the primary and only source. This also removes the nee
 
 The panel can be rendered in full, virtualised, or extended lazily. The reader jumps to the bottom and, if new rows appear, walks the whole list and merges rows by time and text. It stops only when the list is stable and no loading indicator remains, and a time limit produces `INCOMPLETE_TRANSCRIPT`.
 
-**Caveat:** only one 3-minute video could be read live. Behaviour of the panel on long videos is unconfirmed; the virtualised path is tested only against a local simulation.
+The panel must stay inside the viewport while it is read, so it is made transparent rather than moved off-screen. Lazy loading of this kind fires only when the next batch is visible; an off-screen panel reproduced the failure users saw on videos over an hour, a long wait and then no copy, in the local simulation of a paginated list.
+
+**Caveat:** only one 3-minute video could be read live here. How the panel behaves on long videos is inferred from that reproduction, and the paginated and virtualised paths are tested only against a local simulation.
 
 ## Navigation
 
@@ -57,6 +59,10 @@ Firefox: MDN documents that writing without recent user activation needs `clipbo
 ## Bot checks
 
 After a small number of page loads, YouTube showed the automated test browser “Sign in to confirm you're not a bot” on most videos. Testing stopped at that boundary, with no attempt to get around it. This is why live coverage is limited to one video. If a user sees this wall, the extension reports a failure instead of copying.
+
+## Signed-in state
+
+Maintainer testing in Edge and Firefox found that YouTube does not show transcripts to logged-out viewers, and that copying works fully when logged in, including on videos over an hour. One automated logged-out session did receive a transcript for one video, so the behaviour may vary by session or video. The extension does not try to work around this.
 
 ## Keyboard shortcut
 

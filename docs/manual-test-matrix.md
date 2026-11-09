@@ -1,13 +1,13 @@
 # Manual test matrix
 
-Run in current stable Chromium and Firefox before calling a release complete. Results below are from 2026-11-09. "Simulated" means the local page in `tests/e2e`, not live YouTube.
+Run in current stable Chromium and Firefox before calling a release complete. Results below are from 2026-11-09. "Simulated" means the local page in `tests/e2e`, not live YouTube. "By hand" means reported by the maintainer from a normal browser session.
 
 | Scenario | Expected | Chromium 151 | Firefox |
 | --- | --- | --- | --- |
-| Manual English subtitles | Complete one-click copy | Pass, live, 1 video | To do |
+| Manual English subtitles | Complete one-click copy | Pass, live, 1 video | Pass, by hand |
 | Auto-generated subtitles | Complete one-click copy | To do | To do |
 | More than one language track | Same panel language each time | To do | To do |
-| Long video (1 hour or more) | Complete copy, no UI freeze | Simulated 1500 rows only | To do |
+| Long video (1 hour or more) | Complete copy, no UI freeze | Pass, by hand in Edge; simulated 1500 and 3000 rows | Pass, by hand |
 | Video with no captions | Clear error, clipboard unchanged | Simulated | To do |
 | Direct visit to watch URL | Button mounts exactly once | Pass, live | To do |
 | Click another suggested video | Button works for the new video | Simulated | To do |
@@ -19,8 +19,8 @@ Run in current stable Chromium and Firefox before calling a release complete. Re
 | Clipboard permission denied | Clear error, no false success | Unit test only | To do |
 | Ad playing during copy | Copy works | To do | To do |
 | Ad blocker or privacy extension | Graceful behaviour | To do | To do |
-| Logged in | Note any differences | To do | To do |
-| Logged out | Note any differences | Pass, live | To do |
+| Logged in | Note any differences | Pass, by hand in Edge | Pass, by hand |
+| Logged out | Note any differences | Varies: YouTube showed no transcript by hand in Edge; 1 video worked in an automated session | YouTube showed no transcript, by hand |
 | Toolbar icon at 16 and 32 px, light and dark | Play mark, bars, and outlines legible | To do | To do |
 | 48 and 128 px on the extensions page | Correct icon | To do | To do |
 | Popup: remove-timestamps toggle changes output | Timestamps appear when off | Simulated | To do |

@@ -24,7 +24,7 @@ No panel to open, nothing to select, no scrolling. Transcript Copier adds a **Co
 - **Honest.** “Copied” appears only after the clipboard write succeeds. If a copy fails, your clipboard stays as it was.
 - **Keep it private.** No tracking, external requests, or runtime dependencies.
 
-> **Project status:** the name is provisional. Tested on live YouTube in Chromium with one video only; Firefox has not been run yet. See [test status](#test-status).
+> **Project status:** the name is provisional. Works on live YouTube in Edge and Firefox when logged in. See [test status](#test-status).
 
 ## Get the source
 
@@ -77,6 +77,7 @@ Settings are saved locally. Each browser stores its own.
 - Only standard desktop `youtube.com/watch` pages are supported. Shorts, embeds, and YouTube Music are not.
 - The extension copies the transcript and language YouTube’s panel shows. **There is no language setting**, because the current panel offers no language menu. Nothing is ever translated.
 - A video without a transcript cannot be copied. There is no speech recognition.
+- **Sign in to YouTube.** YouTube may not offer transcripts to logged-out viewers, and the extension cannot copy what YouTube does not show.
 - The extension relies on YouTube’s page structure, which can change without notice. Selectors are kept in `src/transcript/selectors.js`.
 
 ## Troubleshooting
@@ -84,7 +85,7 @@ Settings are saved locally. Each browser stores its own.
 | Message | What to do |
 | --- | --- |
 | Open a YouTube video first | Open a `youtube.com/watch` page. Refresh tabs that were open before installing. |
-| No transcript available for this video | YouTube offers no transcript for this video, or its page has not finished loading. |
+| No transcript available for this video | If you are logged out, sign in to YouTube and try again. Otherwise YouTube offers no transcript for this video, or its page has not finished loading. |
 | Couldn’t load captions | The video could not play. Check whether YouTube asks you to sign in. |
 | Transcript request timed out | Try again. An ad or content blocker may be interfering with the panel. |
 | Transcript could not be copied completely | Nothing was copied, because the transcript looked truncated. Try again. |
@@ -97,7 +98,7 @@ The extension runs only on `https://www.youtube.com/`. Transcripts stay in memor
 
 ## How it works
 
-YouTube’s caption URLs now return empty responses to direct requests. So a Manifest V3 content script presses YouTube’s own **Show transcript** button, keeps the panel off-screen so the page doesn’t move, reads every row until the list stops growing, then closes the panel. The reasoning and evidence are in [docs/feasibility.md](docs/feasibility.md).
+YouTube’s caption URLs now return empty responses to direct requests. So a Manifest V3 content script presses YouTube’s own **Show transcript** button, keeps the panel invisible so the page doesn’t move, reads every row until the list stops growing, then closes the panel. The reasoning and evidence are in [docs/feasibility.md](docs/feasibility.md).
 
 The extension checks that the video has not changed before writing to the clipboard, and rejects transcripts that end before half of a video longer than two minutes.
 
@@ -158,13 +159,14 @@ xvfb-run -a python3 tests/e2e/run_chromium.py
 
 ### Test status
 
-| Check | Chromium 151 | Firefox |
+| Check | Chromium family | Firefox |
 | --- | --- | --- |
 | Unit and packaging checks | Pass | Browser-independent, pass |
-| End-to-end on the local page | Pass | Not run |
-| Live YouTube, click and shortcut | Pass, one video, logged out | Not run |
+| End-to-end on the local page | Pass, Chromium 151 | Not run |
+| Live YouTube, logged in | Pass by hand in Edge, including videos over an hour | Pass by hand, including videos over an hour |
+| Live YouTube, logged out | YouTube showed no transcript by hand in Edge | YouTube showed no transcript by hand |
 
-Long videos, auto-generated captions, and other live scenarios still need the [manual test matrix](docs/manual-test-matrix.md).
+Remaining live scenarios are listed in the [manual test matrix](docs/manual-test-matrix.md).
 
 ## Development note
 
