@@ -7,7 +7,7 @@
   function withTimeout(promise, limitMs, setTimer, clearTimer) {
     let timer;
     const timeout = new Promise((_, reject) => {
-      timer = setTimer(() => reject(new TC.TranscriptError('TIMEOUT')), limitMs);
+      timer = setTimer(() => reject(new TC.TranscriptError('TIMEOUT', 'overall limit')), limitMs);
     });
     return Promise.race([promise, timeout]).finally(() => clearTimer(timer));
   }

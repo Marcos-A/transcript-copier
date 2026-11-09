@@ -79,6 +79,20 @@
       return null;
     }
 
+    /** Structure of the open panels for the console. Contains no transcript text. */
+    function describePanels(staleSignature) {
+      const parts = allPanels().filter(isExpanded).map((panel) => {
+        const read = readPanel(panel);
+        const tags = new Set();
+        panel.querySelectorAll('*').forEach((element) => {
+          if (element.localName.includes('-')) tags.add(element.localName);
+        });
+        const stale = Boolean(read) && signatureOf(read.rows) === staleSignature;
+        return `${panel.getAttribute('target-id')}: rows=${read ? read.rows.length : 0} stale=${stale} tags=${[...tags].join(',')}`;
+      });
+      return parts.join(' | ') || 'no expanded panel';
+    }
+
     async function waitFor(check, limitMs, guard) {
       const deadline = now() + limitMs;
       for (;;) {
@@ -99,7 +113,8 @@
       button.click();
       const panel = await waitFor(() => findExpandedTranscript(staleSignature), timing.rowsWaitMs, guard);
       if (!panel) {
-        throw new TC.TranscriptError(doc.querySelector(S.playerError) ? 'TRACK_UNAVAILABLE' : 'TIMEOUT', 'no rows');
+        const code = doc.querySelector(S.playerError) ? 'TRACK_UNAVAILABLE' : 'TIMEOUT';
+        throw new TC.TranscriptError(code, `no rows; ${describePanels(staleSignature)}`);
       }
       return panel;
     }

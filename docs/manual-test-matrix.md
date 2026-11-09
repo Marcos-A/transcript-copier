@@ -13,14 +13,14 @@ Run in current stable Chromium and Firefox before calling a release complete. Re
 | Click another suggested video | Button works for the new video | Simulated | To do |
 | Navigate during extraction | No stale result copied | Simulated | To do |
 | Transcript panel initially closed | Copy still works | Pass, live | To do |
-| Transcript panel already open | Copy works, panel stays open | To do | To do |
+| Transcript panel already open | Copy works, panel stays open | Simulated | To do |
 | Dark and light mode | Button is legible | Pass, live | To do |
 | Copy via keyboard command | Same content, truthful status | Pass, live (event dispatched, not a real key press) | To do |
 | Clipboard permission denied | Clear error, no false success | Unit test only | To do |
 | Ad playing during copy | Copy works | To do | To do |
-| Ad blocker or privacy extension | Graceful behaviour | To do | To do |
+| Ad blocker or privacy extension | Graceful behaviour | To do | uBlock Origin, logged out, by hand: transcript does not load, copy reports a timeout |
 | Logged in | Note any differences | Pass, by hand in Edge | Pass, by hand |
-| Logged out | Note any differences | Varies: YouTube showed no transcript by hand in Edge; 1 video worked in an automated session | YouTube showed no transcript, by hand |
+| Logged out | Note any differences | Pass, by hand in Edge | Pass, by hand, with uBlock Origin off |
 | Toolbar icon at 16 and 32 px, light and dark | Play mark, bars, and outlines legible | To do | To do |
 | 48 and 128 px on the extensions page | Correct icon | To do | To do |
 | Popup: remove-timestamps toggle changes output | Timestamps appear when off | Simulated | To do |

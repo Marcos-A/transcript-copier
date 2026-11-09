@@ -62,7 +62,9 @@ After a small number of page loads, YouTube showed the automated test browser â€
 
 ## Signed-in state
 
-Maintainer testing in Edge and Firefox found that YouTube does not show transcripts to logged-out viewers, and that copying works fully when logged in, including on videos over an hour. One automated logged-out session did receive a transcript for one video, so the behaviour may vary by session or video. The extension does not try to work around this.
+Copying works when logged in on Edge and Firefox, including videos over 90 minutes. Logged out, it worked by hand in Edge, in Firefox, and in one automated Chromium session. One very long video showed no transcript when logged out.
+
+In Firefox, logged out, uBlock Origin stopped the transcript from loading at all. YouTube's older panel (`engagement-panel-searchable-transcript`) opened with no rows and the copy timed out. With uBlock Origin off and the page reloaded, the transcript appeared and copying worked.
 
 ## Keyboard shortcut
 

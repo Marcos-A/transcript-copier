@@ -51,6 +51,9 @@ panel.querySelector('button').onclick=()=>panel.setAttribute('visibility',HIDDEN
 window.spa=(id)=>{document.dispatchEvent(new CustomEvent('yt-navigate-start'));
   history.pushState({},'','/watch?v='+id);
   setTimeout(()=>{setup();document.dispatchEvent(new CustomEvent('yt-navigate-finish'));},50);};
+window.spaPath=(path)=>{document.dispatchEvent(new CustomEvent('yt-navigate-start'));
+  history.pushState({},'',path);
+  setTimeout(()=>{setup();document.dispatchEvent(new CustomEvent('yt-navigate-finish'));},50);};
 window.rerenderActions=()=>{const m=document.getElementById('menu');const r=document.createElement('div');r.id='top-level-buttons-computed';m.replaceChildren(r);};
 setup();
 </script>

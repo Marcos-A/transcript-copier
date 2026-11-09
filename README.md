@@ -77,7 +77,6 @@ Settings are saved locally. Each browser stores its own.
 - Only standard desktop `youtube.com/watch` pages are supported. Shorts, embeds, and YouTube Music are not.
 - The extension copies the transcript and language YouTube’s panel shows. **There is no language setting**, because the current panel offers no language menu. Nothing is ever translated.
 - A video without a transcript cannot be copied. There is no speech recognition.
-- **Sign in to YouTube.** YouTube may not offer transcripts to logged-out viewers, and the extension cannot copy what YouTube does not show.
 - The extension relies on YouTube’s page structure, which can change without notice. Selectors are kept in `src/transcript/selectors.js`.
 
 ## Troubleshooting
@@ -85,9 +84,9 @@ Settings are saved locally. Each browser stores its own.
 | Message | What to do |
 | --- | --- |
 | Open a YouTube video first | Open a `youtube.com/watch` page. Refresh tabs that were open before installing. |
-| No transcript available for this video | If you are logged out, sign in to YouTube and try again. Otherwise YouTube offers no transcript for this video, or its page has not finished loading. |
+| No transcript available for this video | YouTube offers no transcript for this video, or its page has not finished loading. |
 | Couldn’t load captions | The video could not play. Check whether YouTube asks you to sign in. |
-| Transcript request timed out | Try again. An ad or content blocker may be interfering with the panel. |
+| Transcript request timed out | Try again. If it keeps failing, click YouTube’s own **Show transcript**. If no text appears there either, a content blocker may be stopping it: uBlock Origin did this in Firefox when logged out. Turn the blocker off for YouTube and reload. The browser console shows a `[transcript-copier]` line describing what was found, without transcript text. |
 | Transcript could not be copied completely | Nothing was copied, because the transcript looked truncated. Try again. |
 | Couldn’t access the clipboard | Keep the browser window focused and try again. |
 | Video changed; try again | You moved to another video during the copy. |
@@ -164,7 +163,7 @@ xvfb-run -a python3 tests/e2e/run_chromium.py
 | Unit and packaging checks | Pass | Browser-independent, pass |
 | End-to-end on the local page | Pass, Chromium 151 | Not run |
 | Live YouTube, logged in | Pass by hand in Edge, including videos over an hour | Pass by hand, including videos over an hour |
-| Live YouTube, logged out | YouTube showed no transcript by hand in Edge | YouTube showed no transcript by hand |
+| Live YouTube, logged out | Pass by hand in Edge | Pass by hand with uBlock Origin off. With it on, the transcript does not load and the copy times out |
 
 Remaining live scenarios are listed in the [manual test matrix](docs/manual-test-matrix.md).
 

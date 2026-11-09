@@ -5,7 +5,8 @@
 
   const currentVideoId = () => TC.videoIdFromLocation(location);
   const panelSource = TC.createPanelSource();
-  let staleSignature = null;
+  // Rows left in the page by the last watched video; only stale once a different video is current.
+  let leftovers = { signature: null, videoId: null };
   let active = false;
 
   /** Player duration, or NaN while an ad plays, since the video element then reports the ad. */
@@ -25,7 +26,7 @@
     currentVideoId,
     getDurationMs,
     getMetadata,
-    staleSignature: () => staleSignature,
+    staleSignature: () => (leftovers.videoId === currentVideoId() ? null : leftovers.signature),
   });
 
   const mount = TC.createButtonMount({
@@ -52,7 +53,8 @@
       return { ok: true, message, text: deliver === 'return' ? result.text : undefined };
     } catch (error) {
       const code = error instanceof TC.TranscriptError ? error.code : 'PARSE_ERROR';
-      if (!(error instanceof TC.TranscriptError)) console.warn('[transcript-copier]', error && error.name);
+      // Codes and panel structure only, never transcript text.
+      console.warn('[transcript-copier]', error instanceof TC.TranscriptError ? error.message : error && error.name);
       const message = TC.msg(`error_${code}`);
       mount.setState('error', message);
       if (deliver === 'clipboard') TC.showToast(message, 'error');
@@ -64,7 +66,8 @@
 
   TC.watchNavigation({
     onStart: () => {
-      staleSignature = panelSource.currentSignature();
+      const videoId = currentVideoId();
+      if (videoId) leftovers = { signature: panelSource.currentSignature(), videoId };
     },
     onFinish: () => mount.refresh(),
   });
